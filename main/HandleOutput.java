@@ -11,7 +11,7 @@ public class HandleOutput {
     public static List<Map.Entry<String, AtomicInteger>> sortedAuthors;
 
     public static void writeCategories () {
-        sortedCategories = new ArrayList<>(Tema1.categories.entrySet());
+        sortedCategories = new ArrayList<>(Aggregator.categories.entrySet());
         sortedCategories.sort(Helpers::compareMapEntries);
 
         for(Map.Entry<String, Set<String>> cat : sortedCategories) {
@@ -28,7 +28,7 @@ public class HandleOutput {
     }
 
     public static void writeLanguages () {
-        sortedLanguages = new ArrayList<>(Tema1.languages.entrySet());
+        sortedLanguages = new ArrayList<>(Aggregator.languages.entrySet());
         sortedLanguages.sort(Helpers::compareMapEntries);
 
         for(Map.Entry<String, Set<String>> lang : sortedLanguages) {
@@ -45,7 +45,7 @@ public class HandleOutput {
     }
 
     public static void writeArticles () {
-        sortedArticles = new ArrayList<>(Tema1.readArticles.values());
+        sortedArticles = new ArrayList<>(Aggregator.readArticles.values());
         sortedArticles.sort(Helpers::compareArticles);
 
 
@@ -57,7 +57,7 @@ public class HandleOutput {
     }
 
     public static void writeKeywords () {
-        sortedWords = new ArrayList<>(Tema1.words.entrySet());
+        sortedWords = new ArrayList<>(Aggregator.words.entrySet());
         sortedWords.removeIf(entry -> entry.getValue().get() <= 0);
         sortedWords.sort(Helpers::sortWordsAndAuthors);
 
@@ -69,15 +69,15 @@ public class HandleOutput {
     }
 
     public static void sortAuthors () {
-        sortedAuthors = new ArrayList<>(Tema1.authors.entrySet());
+        sortedAuthors = new ArrayList<>(Aggregator.authors.entrySet());
         sortedAuthors.removeIf(entry -> entry.getValue().get() <= 0);
         sortedAuthors.sort(Helpers::sortWordsAndAuthors);
     }
 
     public static void writeReports () {
         List<String> reports = new ArrayList<>();
-        reports.add("duplicates_found - " + (Tema1.totalCounter.get() - Tema1.readArticles.size()));
-        reports.add("unique_articles - " + Tema1.readArticles.size());
+        reports.add("duplicates_found - " + (Aggregator.totalCounter.get() - Aggregator.readArticles.size()));
+        reports.add("unique_articles - " + Aggregator.readArticles.size());
         reports.add("best_author - " + sortedAuthors.getFirst().getKey() + " " + sortedAuthors.getFirst().getValue().get());
         reports.add("top_language - " + sortedLanguages.getFirst().getKey() + " " + sortedLanguages.getFirst().getValue().size());
         reports.add("top_category - " + sortedCategories.getFirst().getKey().replace(",", "").replace(" ", "_") + " " + sortedCategories.getFirst().getValue().size());

@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
-public class Tema1 {
+public class Aggregator {
     public static CyclicBarrier barrier;
 
     public static ConcurrentHashMap<String, Set<String>> categories = new ConcurrentHashMap<>();

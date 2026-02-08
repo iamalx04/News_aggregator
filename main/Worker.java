@@ -66,7 +66,7 @@ public class Worker extends Thread{
         }
 
         for (Article article : articles) {
-            Tema1.totalCounter.incrementAndGet();
+            Aggregator.totalCounter.incrementAndGet();
 
             Article foundDuplicateUuid = readArticles.putIfAbsent(article.getUuid(), article);
 
@@ -98,7 +98,7 @@ public class Worker extends Thread{
         int totalSize = activeArticlesList.size();
 
         while(true){
-            int i = Tema1.processingIndex.getAndIncrement();
+            int i = Aggregator.processingIndex.getAndIncrement();
 
             if (i >= totalSize) {
                 break;
@@ -107,12 +107,12 @@ public class Worker extends Thread{
             Article currentArt = activeArticlesList.get(i);
 
             for(String cat : currentArt.getCategories()) {
-                if(Tema1.categories.containsKey(cat))
-                    Tema1.categories.get(cat).add(currentArt.getUuid());
+                if(Aggregator.categories.containsKey(cat))
+                    Aggregator.categories.get(cat).add(currentArt.getUuid());
             }
 
-            if(Tema1.languages.containsKey(currentArt.getLanguage()))
-                Tema1.languages.get(currentArt.getLanguage()).add(currentArt.getUuid());
+            if(Aggregator.languages.containsKey(currentArt.getLanguage()))
+                Aggregator.languages.get(currentArt.getLanguage()).add(currentArt.getUuid());
 
             if("english".equals(currentArt.getLanguage())) {
                 HashSet<String> uniqueWords = new HashSet<>();
@@ -129,13 +129,13 @@ public class Worker extends Thread{
                     if(word.isEmpty())
                         continue;
 
-                    if(!Tema1.forbiddenWords.contains(word)) {
-                        Tema1.words.computeIfAbsent(word, k -> new AtomicInteger(0)).incrementAndGet();
+                    if(!Aggregator.forbiddenWords.contains(word)) {
+                        Aggregator.words.computeIfAbsent(word, k -> new AtomicInteger(0)).incrementAndGet();
                     }
                 }
             }
 
-            Tema1.authors.computeIfAbsent(currentArt.getAuthor(), k -> new AtomicInteger(0)).incrementAndGet();
+            Aggregator.authors.computeIfAbsent(currentArt.getAuthor(), k -> new AtomicInteger(0)).incrementAndGet();
         }
     }
 
@@ -151,7 +151,7 @@ public class Worker extends Thread{
         }
 
         try {
-            Tema1.barrier.await();
+            Aggregator.barrier.await();
         } catch (BrokenBarrierException | InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -161,7 +161,7 @@ public class Worker extends Thread{
         }
 
         try {
-            Tema1.barrier.await();
+            Aggregator.barrier.await();
         } catch (BrokenBarrierException | InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -169,13 +169,13 @@ public class Worker extends Thread{
         generateMaps();
 
         try {
-            Tema1.barrier.await();
+            Aggregator.barrier.await();
         } catch (BrokenBarrierException | InterruptedException e) {
             throw new RuntimeException(e);
         }
 
         while (true) {
-            String operation = Tema1.finalTasksQueue.poll();
+            String operation = Aggregator.finalTasksQueue.poll();
             if (operation == null) {
                 break;
             }
@@ -190,7 +190,7 @@ public class Worker extends Thread{
         }
 
         try {
-            Tema1.barrier.await();
+            Aggregator.barrier.await();
         } catch (BrokenBarrierException | InterruptedException e) {
             throw new RuntimeException(e);
         }

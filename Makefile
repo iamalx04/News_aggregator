@@ -1,6 +1,6 @@
 CLASSPATH = "libs/*:."
 
-MAIN = main.Tema1
+MAIN = main.Aggregator
 
 .PHONY: build run clean
 
